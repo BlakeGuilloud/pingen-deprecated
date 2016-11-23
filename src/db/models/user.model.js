@@ -14,6 +14,8 @@ User.jsonSchema = {
   properties: {
     id: { type: 'integer' },
     externalId: { type: 'string' },
+    pin: { type: 'string' },
+    timestamp: { type: 'integer' },
   }
 }
 

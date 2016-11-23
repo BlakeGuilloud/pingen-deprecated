@@ -4,6 +4,8 @@ exports.up = function(knex, Promise) {
     knex.schema.createTableIfNotExists('Users', (table) => {
       table.increments();
       table.string('externalId');
+      table.string('pin');
+      table.integer('timestamp');
     })
   )
 };
