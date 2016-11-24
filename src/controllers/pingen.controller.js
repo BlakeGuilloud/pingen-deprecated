@@ -9,15 +9,14 @@ export function register(req, res) {
 
 export function requestPin(req, res) {
   Promise.resolve()
-    .then(() => pingenService.requestPin(req.params.id))
-    .then((id) => res.status(200).json(id))
+    .then(() => pingenService.requestPin(req.body.id))
+    .then((pin) => res.status(200).json(pin))
     .catch((err) => console.log(err));
 }
 
 export function verify(req, res) {
-  console.log('req body', req.body.pin);
   Promise.resolve()
-    .then(() => pingenService.verify(req.body.pin))
+    .then(() => pingenService.verify(req.body.pin, req.body.id))
     .then((user) => res.status(200).json(user))
     .catch((err) => console.log(err));
 }

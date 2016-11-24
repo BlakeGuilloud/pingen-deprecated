@@ -14,9 +14,18 @@ User.jsonSchema = {
   properties: {
     id: { type: 'integer' },
     externalId: { type: 'string' },
-    pin: { type: 'string' },
-    timestamp: { type: 'integer' },
+  },
+};
+
+User.relationMappings = {
+  pin: {
+    relation: Model.BelongsToOneRelation,
+    modelClass: path.join(__dirname, './pin.model'),
+    join: {
+      from: 'Users.id',
+      to: 'Pins.userId',
+    },
   }
-}
+};
 
 export default User;

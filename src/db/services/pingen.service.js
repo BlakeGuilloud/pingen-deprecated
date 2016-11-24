@@ -1,4 +1,5 @@
 import User from '../models/user.model';
+import Pin from '../models/pin.model';
 
 export async function register(user) {
   let newUser;
@@ -13,41 +14,41 @@ export async function register(user) {
   return newUser;
 }
 
-export async function requestPin(externalId) {
+export async function requestPin(id) {
   let newPin;
+  console.log('dateNow', Date.now());
   try {
-    const user = await User.query()
-      .where('externalId', externalId)
-      .first();
-      user.pin = JSON.stringify(Math.floor(Math.random() * 1000000));
-      user.timestamp = 123;
-    const updatedUser = await User.query()
-      .where('id', user.id)
-      .first()
-      .update(user);
-    newPin = await User.query()
-      .findById(updatedUser);
+    const pinObj = {
+      pin: JSON.stringify(Math.floor(Math.random() * 1000000)),
+      timestamp: Date.now(),
+      userId: JSON.parse(id),
+    };
+    newPin = await Pin.query()
+      .insertWithRelated(pinObj);
   } catch (err) {
     return Promise.reject(err);
   }
-
-  return JSON.parse(newPin.pin);
+  return newPin;
 }
 
-export async function verify(pin) {
-  let user;
-  console.log('pin', pin);
+export async function verify(pin, id) {
+  let newPin;
+
   try {
-    user = await User.query()
-      .where('pin', pin)
-      .first();
-      console.log('user', user);
+    newPin = await Pin.query()
+      .findById(id);
+    console.log('verifed pin', pin);
   } catch (err) {
     return Promise.reject(err);
   }
-  if (user.timestamp > 122) {
-    return true;
+  if (newPin.pin === pin) {
+    const newTime = Date.now() - newPin.timestamp;
+    if ((newTime / 1000) < 30) {
+      return true;
+    } else {
+      return 'PIN is too old';
+    }
   } else {
-    return false;
+    return 'PIN is wrong';
   }
 }
